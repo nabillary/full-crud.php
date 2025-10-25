@@ -1,10 +1,4 @@
-<footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
-    </div>
-  </footer>
+
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
@@ -14,8 +8,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="assets-template/plugins/jquery/jquery.min.js"></script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="assets-template/plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
@@ -28,6 +21,8 @@
 <script src="assets-template/plugins/chart.js/Chart.min.js"></script>
 <!-- Sparkline -->
 <script src="assets-template/plugins/sparklines/sparkline.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- JQVMap -->
 <script src="assets-template/plugins/jqvmap/jquery.vmap.min.js"></script>
 <script src="assets-template/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>

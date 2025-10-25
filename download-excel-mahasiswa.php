@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 // membatasi halaman login
@@ -19,15 +18,20 @@ if ($_SESSION['level'] != 1 and $_SESSION['level'] != 3) {
     </script>";
     exit;
 }
-require 'config/app.php';
 
+require 'config/app.php';
 require 'vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+// Bersihkan output buffer untuk memastikan tidak ada output sebelumnya
+ob_clean();
+
 $spreadsheet = new Spreadsheet();
 $activeWorksheet = $spreadsheet->getActiveSheet();
+
+// Set judul kolom
 $activeWorksheet->setCellValue('A2', 'No');
 $activeWorksheet->setCellValue('B2', 'Nama');
 $activeWorksheet->setCellValue('C2', 'Program Studi');
@@ -42,25 +46,23 @@ $sno = 1;
 $start = 3;
 
 foreach ($data_mahasiswa as $mahasiswa) {
-    $activeWorksheet->setCellValue('A' . $start, $sno++)
-        ->getColumnDimension('A')->setAutoSize(true);
-    $activeWorksheet->setCellValue('B' . $start, $mahasiswa['nama'])
-        ->getColumnDimension('B')->setAutoSize(true);
-    $activeWorksheet->setCellValue('C' . $start, $mahasiswa['prodi'])
-        ->getColumnDimension('C')->setAutoSize(true);
-    $activeWorksheet->setCellValue('D' . $start, $mahasiswa['jk'])
-        ->getColumnDimension('D')->setAutoSize(true);
-    $activeWorksheet->setCellValue('E' . $start, $mahasiswa['telepon'])
-        ->getColumnDimension('E')->setAutoSize(true);
-    $activeWorksheet->setCellValue('F' . $start, $mahasiswa['email'])
-        ->getColumnDimension('F')->setAutoSize(true);
-    $activeWorksheet->setCellValue('G' . $start, 'http://localhost/crud_php/assets/img/' . $mahasiswa['foto'])
-        ->getColumnDimension('G')->setAutoSize(true);
-
+    $activeWorksheet->setCellValue('A' . $start, $sno++);
+    $activeWorksheet->setCellValue('B' . $start, $mahasiswa['nama']);
+    $activeWorksheet->setCellValue('C' . $start, $mahasiswa['prodi']);
+    $activeWorksheet->setCellValue('D' . $start, $mahasiswa['jk']);
+    $activeWorksheet->setCellValue('E' . $start, $mahasiswa['telepon']);
+    $activeWorksheet->setCellValue('F' . $start, $mahasiswa['email']);
+    $activeWorksheet->setCellValue('G' . $start, 'http://localhost/crud_php/assets/img/' . $mahasiswa['foto']);
+    
     $start++;
 }
 
-// border excel
+// Set auto size untuk semua kolom
+foreach(range('A','G') as $col) {
+    $activeWorksheet->getColumnDimension($col)->setAutoSize(true);
+}
+
+// Border excel
 $styleArray = [
     'borders' => [
         'allBorders' => [
@@ -70,13 +72,14 @@ $styleArray = [
 ];
 
 $border = $start - 1;
-
 $activeWorksheet->getStyle('A2:G' . $border)->applyFromArray($styleArray);
 
-$writer = new Xlsx($spreadsheet);
-$writer->save('Laporan Data Mahasiswa.xlsx');
+// PENTING: Set header SEBELUM menulis file
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="Laporan Data Mahasiswa.xlsx"');
-readfile('Laporan Data Mahasiswa.xlsx');
-unlink('Laporan Data Mahasiswa.xlsx');
-exit;   
+header('Cache-Control: max-age=0');
+
+// Tulis langsung ke output
+$writer = new Xlsx($spreadsheet);
+$writer->save('php://output');
+exit;
